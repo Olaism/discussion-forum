@@ -1,0 +1,33 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+            <tr class="table-dark">
+                <th scope="col">Board</th>
+                <th scope="col">Posts</th>
+                <th scope="col">Topics</th>
+                <th scope="col">Last Post</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for board in boards %}
+            <tr>
+                <td scope="row">{{ board.name }}
+                    <br />
+                    <small class="text-small text-muted">
+                        {{ board.description }}
+                    </small>
+                </td>
+                <td>0</td>
+                <td>0</td>
+                <td></td>
+            </tr>
+            {% empty %}
+            <tr>No board available.</tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+{% endblock content %}

@@ -26,6 +26,9 @@ class Topic(models.Model):
         related_name='topics'
     )
 
+    def __str__(self):
+        return self.subject[:30]
+
 
 class Post(models.Model):
     message = models.TextField(max_length=4000)
@@ -47,3 +50,6 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         related_name='+'
     )
+
+    def __str__(self):
+        return self.message[:30]
