@@ -1,5 +1,10 @@
 {% extends "_base.html" %}
 
+{% block breadcrumb %}
+    <li class="breadcrumb-item text-light p-1">Home</li>
+{% endblock breadcrumb %}
+
+
 {% block content %}
     <table class="table table-striped">
         <thead>
@@ -13,7 +18,8 @@
         <tbody class="table-group-divider">
             {% for board in boards %}
             <tr>
-                <td scope="row">{{ board.name }}
+                <td scope="row">
+                    <a href="{% url 'board_topics' board.pk %}">{{ board.name }}</a>
                     <br />
                     <small class="text-small text-muted">
                         {{ board.description }}
