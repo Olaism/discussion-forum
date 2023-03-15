@@ -5,10 +5,40 @@
 {% endblock title %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item text-secondary"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Library</li>
+    <li class="breadcrumb-item text-secondary">
+        <a href="{% url 'home' %}">Board</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {{ board.name }}
+    </li>
 {% endblock breadcrumb %}
 
 {% block content %}
-    This is the detail page
+<div class="mb-4">
+    <a href="{% url 'new_topic' board.pk %}" class="btn btn-primary">
+        New Topic
+    </a>
+</div>
+    <table class="table table-striped">
+        <thead>
+            <tr class="table-dark">
+                <th scope="col">Topic</th>
+                <th scope="col">Starter</th>
+                <th scope="col">Replies</th>
+                <th scope="col">Views</th>
+                <th scope="col">last Update</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for topic in board.topics.all %}
+            <tr>
+                <td class="row">{{ topic.subject }}</td>
+                <td>{{ topic.starter.username }}</td>
+                <td>0</td>
+                <td>0</td>
+                <td>{{ topic.last_updated }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock content %}
