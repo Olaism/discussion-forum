@@ -1,6 +1,12 @@
 {% extends '_base.html' %}
 
-{% block title %}{% endblock title %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+{% endblock stylesheet %}
+
+{% block title %}Sign Up{% endblock title %}
 
 
 {% block body %}
