@@ -5,6 +5,8 @@ from .forms import SignupForm
 
 
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect('home')
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
