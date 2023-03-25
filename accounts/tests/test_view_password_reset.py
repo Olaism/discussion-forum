@@ -8,6 +8,7 @@ from django.contrib.auth.views import (
     PasswordResetView,
     PasswordResetDoneView,
     PasswordResetConfirmView,
+    PasswordResetCompleteView
 )
 from django.core import mail
 from django.urls import reverse, resolve
@@ -178,3 +179,17 @@ class InvalidPasswordResetConfirmTests(TestCase):
         self.assertContains(self.response, 'invalid password reset link')
         self.assertContains(
             self.response, 'href="{0}"'.format(password_reset_url))
+
+
+class PasswordResetCompleteTests(TestCase):
+
+    def setUp(self):
+        url = reverse('password_reset_complete')
+        self.response = self.client.get(url)
+
+    def test_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_view_function(self):
+        view = resolve('/accounts/reset/done/')
+        self.assertEquals(view.func.view_class, PasswordResetCompleteView)
