@@ -8,6 +8,7 @@ from django.shortcuts import (
 from .forms import NewTopicForm
 from .models import (
     Board,
+    Topic,
     Post
 )
 
@@ -43,3 +44,9 @@ def new_topic(request, pk):
     else:
         form = NewTopicForm()
     return render(request, 'new_topic.html', {'board': board, 'form': form})
+
+
+@login_required
+def topic_posts(request, pk, topic_pk):
+    topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
+    return render(request, 'topic_posts.html', {'topic': topic})

@@ -1,3 +1,22 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import (
+    Board,
+    Topic,
+    Post
+)
+
+
+@admin.register(Board)
+class BoardAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description',)
+
+
+@admin.register(Topic)
+class TopicAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'last_updated', 'board', 'starter')
+
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('message', 'topic', 'created_by', 'created_at')

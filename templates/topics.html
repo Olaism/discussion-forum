@@ -32,7 +32,11 @@
         <tbody class="table-group-divider">
             {% for topic in board.topics.all %}
             <tr>
-                <td class="row">{{ topic.subject }}</td>
+                <td class="row">
+                    <a href="{% url 'topic_posts' board.pk topic.pk %}">
+                        {{ topic.subject }}
+                    </a>
+                </td>
                 <td>{{ topic.starter.username }}</td>
                 <td>0</td>
                 <td>0</td>
