@@ -1,11 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import (
     get_object_or_404,
-    render
+    render,
+    redirect
 )
 
 from .forms import NewTopicForm
-from .models import Board
+from .models import (
+    Board,
+    Post
+)
 
 
 @login_required
@@ -31,7 +35,7 @@ def new_topic(request, pk):
             topic.starter = request.user
             topic.save()
             post = Post.objects.create(
-                message=form.get_cleaned_data('message'),
+                message=form.cleaned_data.get('message'),
                 topic=topic,
                 created_by=request.user
             )
