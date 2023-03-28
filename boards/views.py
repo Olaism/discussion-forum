@@ -5,7 +5,10 @@ from django.shortcuts import (
     redirect
 )
 
-from .forms import NewTopicForm
+from .forms import (
+    NewTopicForm,
+    PostForm
+)
 from .models import (
     Board,
     Topic,
@@ -53,7 +56,7 @@ def topic_posts(request, pk, topic_pk):
 
 
 @login_required
-def reply_topic(self, pk, topic_pk):
+def reply_topic(request, pk, topic_pk):
     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
     if request.method == 'POST':
         form = PostForm(request.POST)
