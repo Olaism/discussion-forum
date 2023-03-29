@@ -22,6 +22,7 @@ class Board(models.Model):
 class Topic(models.Model):
     subject = models.CharField(max_length=255)
     last_updated = models.DateTimeField(auto_now_add=True)
+    views = models.PositiveIntegerField(default=0)
     board = models.ForeignKey(
         Board,
         on_delete=models.CASCADE,
@@ -34,7 +35,8 @@ class Topic(models.Model):
     )
 
     def __str__(self):
-        return self.subject[:30]
+        truncated_subject = Truncator(self.subject)
+        return truncated_subject.chars(30)
 
 
 class Post(models.Model):

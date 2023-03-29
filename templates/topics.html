@@ -30,7 +30,7 @@
             </tr>
         </thead>
         <tbody class="table-group-divider">
-            {% for topic in board.topics.all %}
+            {% for topic in topics %}
             <tr>
                 <td class="row">
                     <a href="{% url 'topic_posts' board.pk topic.pk %}">
@@ -38,8 +38,8 @@
                     </a>
                 </td>
                 <td>{{ topic.starter.username }}</td>
-                <td>0</td>
-                <td>0</td>
+                <td>{{ topic.replies }}</td>
+                <td>{{ topic.views }}</td>
                 <td>{{ topic.last_updated }}</td>
             </tr>
             {% endfor %}
