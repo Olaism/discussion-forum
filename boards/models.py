@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.text import Truncator
 
 User = get_user_model()
 
@@ -10,6 +11,12 @@ class Board(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_posts_count(self):
+        return Post.objects.filter(topic__board=self).count()
+
+    def get_last_post(self):
+        return Post.objects.filter(topic__board=self).order_by('-created_at').first()
 
 
 class Topic(models.Model):
@@ -52,4 +59,5 @@ class Post(models.Model):
     )
 
     def __str__(self):
-        return self.message[:30]
+        truncated_message = Truncator(self.message)
+        return truncated_message.chars(30)
