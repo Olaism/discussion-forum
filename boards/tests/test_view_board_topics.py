@@ -6,7 +6,7 @@ from ..models import (
     Board,
     Topic
 )
-from ..views import board_topics
+from ..views import TopicListView
 
 User = get_user_model()
 
@@ -51,7 +51,7 @@ class BoardTopicsTest(TestCase):
 
     def test_board_topics_url_resolves_board_topics_view(self):
         view = resolve('/boards/1/')
-        self.assertEqual(view.func, board_topics)
+        self.assertEqual(view.func.view_class, TopicListView)
 
     def test_board_topics_view_contain_new_topic_links(self):
         homepage_url = reverse('home')

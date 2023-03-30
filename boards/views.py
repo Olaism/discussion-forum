@@ -35,26 +35,22 @@ class BoardListView(ListView):
     context_object_name = 'boards'
 
 
-@login_required
-def board_topics(request, pk):
-    board = get_object_or_404(Board, pk=pk)
-    queryset = board.topics.order_by(
-        '-last_updated').annotate(replies=Count('posts') - 1)
-    page = request.GET.get('page', 1)
+@method_decorator(login_required, name='dispatch')
+class TopicListView(ListView):
+    model = Topic
+    template_name = 'topics.html'
+    context_object_name = 'topics'
+    paginate_by = 20
 
-    paginator = Paginator(queryset, 20)
+    def get_context_data(self, **kwargs):
+        kwargs['board'] = self.board
+        return super().get_context_data(**kwargs)
 
-    try:
-        topics = paginator.page(page)
-    except PageNotAnInteger:
-        # fallback to the first page
-        topics = paginator.page(1)
-    except EmptyPage:
-        # probably the user tried to add a page number
-        # in the url, so we fallback to the last page
-        topics = paginator.page(paginator.num_pages)
-
-    return render(request, 'topics.html', {'board': board, 'topics': topics})
+    def get_queryset(self):
+        self.board = get_object_or_404(Board, pk=self.kwargs.get('pk'))
+        queryset = self.board.topics.order_by(
+            '-last_updated').annotate(replies=Count('posts') - 1)
+        return queryset
 
 
 @login_required

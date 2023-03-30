@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (
     BoardListView,
-    board_topics,
+    TopicListView,
     new_topic,
     PostEditView,
     topic_posts,
@@ -11,7 +11,7 @@ from .views import (
 
 urlpatterns = [
     path('', BoardListView.as_view(), name='home'),
-    path('<int:pk>/', board_topics, name='board_topics'),
+    path('<int:pk>/', TopicListView.as_view(), name='board_topics'),
     path('<int:pk>/new/', new_topic, name='new_topic'),
     path('<int:pk>/topics/<int:topic_pk>/', topic_posts, name='topic_posts'),
     path('<int:pk>/topics/<int:topic_pk>/reply/',
