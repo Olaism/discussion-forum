@@ -5,6 +5,8 @@ from django.shortcuts import (
     render,
     redirect
 )
+from django.utils import timezone
+from django.views.generic import UpdateView
 
 from .forms import (
     NewTopicForm,
@@ -74,3 +76,18 @@ def reply_topic(request, pk, topic_pk):
     else:
         form = PostForm()
     return render(request, 'reply_topic.html', {'topic': topic, 'form': form})
+
+
+class PostEditView(UpdateView):
+    model = Post
+    fields = ('message',)
+    pk_url_kwargs = 'post_pk'
+    template_name = 'edit_post.html'
+    context_object_name = 'post'
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.updated_by = self.request.user
+        post.updated_at = timezone.now()
+        post.save()
+        return redirect('topic_posts', pk=post.topic.board.pk, topic_pk=post.topic.pk)
