@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse, resolve
 
 from ..models import Board
-from ..views import home
+from ..views import BoardListView
 
 User = get_user_model()
 
@@ -41,7 +41,7 @@ class HomeTest(TestCase):
 
     def test_home_url_resolves_home_view(self):
         view = resolve('/boards/')
-        self.assertEquals(view.func, home)
+        self.assertEquals(view.func.view_class, BoardListView)
 
     def test_home_view_contains_links_to_topics_page(self):
         board_topics_url = reverse(

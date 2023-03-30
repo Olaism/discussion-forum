@@ -7,7 +7,10 @@ from django.shortcuts import (
 )
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.views.generic import UpdateView
+from django.views.generic import (
+    ListView,
+    UpdateView
+)
 
 from .forms import (
     NewTopicForm,
@@ -20,10 +23,11 @@ from .models import (
 )
 
 
-@login_required
-def home(request):
-    boards = Board.objects.all()
-    return render(request, 'home.html', {'boards': boards})
+@method_decorator(login_required, name='dispatch')
+class BoardListView(ListView):
+    model = Board
+    template_name = 'home.html'
+    context_object_name = 'boards'
 
 
 @login_required
