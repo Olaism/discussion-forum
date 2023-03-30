@@ -6,6 +6,7 @@ from django.shortcuts import (
     redirect
 )
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView
 
 from .forms import (
@@ -78,12 +79,17 @@ def reply_topic(request, pk, topic_pk):
     return render(request, 'reply_topic.html', {'topic': topic, 'form': form})
 
 
+@method_decorator(login_required, name='dispatch')
 class PostEditView(UpdateView):
     model = Post
     fields = ('message',)
     pk_url_kwargs = 'post_pk'
     template_name = 'edit_post.html'
     context_object_name = 'post'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(created_by=self.request.user)
 
     def form_valid(self, form):
         post = form.save(commit=False)
