@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block stylesheet %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock stylesheet %}
+
 {% block title %}Post a reply{% endblock title %}
 
 {% block breadcrumb %}
@@ -34,3 +38,10 @@
         </div>
     {% endfor %}
 {% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+    var simplemde = new SimpleMDE();
+</script>
+{% endblock extra_js %}

@@ -1,5 +1,9 @@
 {% extends '_base.html' %}
 
+{% block stylesheet %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock stylesheet %}
+
 {% block title %}Edit Post{% endblock title %}
 
 {% block breadcrumb %}
@@ -27,3 +31,10 @@
         class="btn btn-outline-secondary" role="button">Cancel</a>
 </form>
 {% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+    var simplemde = new SimpleMDE();
+</script>
+{% endblock extra_js %}
