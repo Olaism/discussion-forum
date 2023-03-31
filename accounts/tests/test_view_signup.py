@@ -52,20 +52,11 @@ class SuccessfulSignupTests(TestCase):
         '''
         A valid form submission should redirect the user to the home page
         '''
-        self.assertRedirects(self.response, self.home_url)
+        login_url = reverse('login')
+        self.assertRedirects(self.response, login_url)
 
     def test_user_creation(self):
         self.assertTrue(User.objects.exists())
-
-    def test_user_authentication(self):
-        '''
-        Create a new request to an arbitrary page.
-        The resulting response should now have a `user` to its context,
-        after a successful sign up.
-        '''
-        response = self.client.get(self.home_url)
-        user = response.context.get('user')
-        self.assertTrue(user.is_authenticated)
 
 
 class InvalidSignupTests(TestCase):
