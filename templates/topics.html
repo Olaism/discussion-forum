@@ -33,11 +33,23 @@
         </thead>
         <tbody class="table-group-divider">
             {% for topic in topics %}
+            {% url 'topic_posts' board.pk topic.pk as topic_url  %}
             <tr>
                 <td class="row">
-                    <a href="{% url 'topic_posts' board.pk topic.pk %}">
-                        {{ topic.subject }}
-                    </a>
+                    <p class="mb-0">
+                        <a href="{{ topic_url }}">
+                            {{ topic.subject }}
+                        </a>
+                    </p>
+                    <small class="text-muted">
+                        Pages:
+                        {% for i in topic.get_page_range %}
+                            <a href="{{ topic_url }}?page={{ i }}">{{ i }}</a>
+                        {% endfor %}
+                        {% if topic.has_many_pages %}
+                            <a href="{{ topic_url }}?page={{ topic.get_page_count }}">Last Page</a>
+                        {% endif %}
+                    </small>
                 </td>
                 <td>{{ topic.starter.username }}</td>
                 <td>{{ topic.replies }}</td>

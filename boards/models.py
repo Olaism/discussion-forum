@@ -1,4 +1,6 @@
+import math
 from markdown import markdown
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.html import mark_safe
@@ -39,6 +41,25 @@ class Topic(models.Model):
     def __str__(self):
         truncated_subject = Truncator(self.subject)
         return truncated_subject.chars(30)
+
+    def get_page_count(self):
+        count = self.posts.count()
+        pages = count / 20
+        return math.ceil(pages)
+
+    def has_many_pages(self, count=None):
+        if count is None:
+            count = self.get_page_count()
+        return count > 6
+
+    def get_page_range(self):
+        count = self.get_page_count()
+        if self.has_many_pages():
+            return range(1, 5)
+        return range(1, count + 1)
+
+    def get_last_ten_posts(self):
+        return self.posts.order_by('-created_at')[:10]
 
 
 class Post(models.Model):
