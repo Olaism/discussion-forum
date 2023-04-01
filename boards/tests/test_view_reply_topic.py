@@ -90,7 +90,8 @@ class SuccessfulReplyTopicTest(ReplyTopicTestCase):
         '''
         url = reverse('topic_posts', kwargs={
             'pk': self.board.pk, 'topic_pk': self.topic.pk})
-        topic_posts_url = '{url}?page=1#10'.format(url=url)
+        post = Post.objects.last()
+        topic_posts_url = '{url}?page=1#{pk}'.format(url=url, pk=post.pk)
         self.assertRedirects(self.response, topic_posts_url)
 
     def test_reply_created(self):

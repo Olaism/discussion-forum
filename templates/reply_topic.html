@@ -24,6 +24,9 @@
         <button type="submit" class="btn btn-success">Post a reply</button>
     </form>
 
+    <div class="text-secondary mt-3 mb-1 p-2">
+        Last ten posts
+    </div>
     {% for post in topic.get_last_ten_posts %}
         <div class="card mb-2">
             <div class="card-body p-3">
