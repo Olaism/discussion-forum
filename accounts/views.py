@@ -11,22 +11,22 @@ User = get_user_model()
 
 def signup(request):
     if request.user.is_authenticated:
-        return redirect('home')
-    if request.method == 'POST':
+        return redirect("home")
+    if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect('login')
+            return redirect("login")
     else:
         form = SignupForm()
-    return render(request, 'accounts/signup.html', {'form': form})
+    return render(request, "accounts/signup.html", {"form": form})
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    fields = ('first_name', 'last_name', 'email')
-    template_name = 'accounts/my_account.html'
-    success_url = reverse_lazy('my_account')
+    fields = ("first_name", "last_name", "email")
+    template_name = "accounts/my_account.html"
+    success_url = reverse_lazy("my_account")
 
     def get_object(self):
         return self.request.user

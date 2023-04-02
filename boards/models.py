@@ -20,23 +20,15 @@ class Board(models.Model):
         return Post.objects.filter(topic__board=self).count()
 
     def get_last_post(self):
-        return Post.objects.filter(topic__board=self).order_by('-created_at').first()
+        return Post.objects.filter(topic__board=self).order_by("-created_at").first()
 
 
 class Topic(models.Model):
     subject = models.CharField(max_length=255)
     last_updated = models.DateTimeField(auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
-    board = models.ForeignKey(
-        Board,
-        on_delete=models.CASCADE,
-        related_name='topics'
-    )
-    starter = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='topics'
-    )
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name="topics")
+    starter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="topics")
 
     def __str__(self):
         truncated_subject = Truncator(self.subject)
@@ -59,28 +51,17 @@ class Topic(models.Model):
         return range(1, count + 1)
 
     def get_last_ten_posts(self):
-        return self.posts.order_by('-created_at')[:10]
+        return self.posts.order_by("-created_at")[:10]
 
 
 class Post(models.Model):
     message = models.TextField(max_length=4000)
-    topic = models.ForeignKey(
-        Topic,
-        on_delete=models.CASCADE,
-        related_name='posts'
-    )
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="posts")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
-    created_by = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='posts'
-    )
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     updated_by = models.ForeignKey(
-        User,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
+        User, null=True, on_delete=models.SET_NULL, related_name="+"
     )
 
     def __str__(self):
@@ -88,4 +69,4 @@ class Post(models.Model):
         return truncated_message.chars(30)
 
     def get_message_as_markdown(self):
-        return mark_safe(markdown(self.message, safe_mode='escape'))
+        return mark_safe(markdown(self.message, safe_mode="escape"))

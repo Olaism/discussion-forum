@@ -23,13 +23,14 @@ register = template.Library()
 #     url = gravatar_url(email, size)
 #     return mark_safe('' % (url, size, size))
 
+
 @register.filter
 def gravatar(user):
-    email = user.email.lower().encode('utf-8')
-    default = 'mm'
+    email = user.email.lower().encode("utf-8")
+    default = "mm"
     size = 256
-    url = 'https://www.gravatar.com/avatar/{md5}?{params}'.format(
+    url = "https://www.gravatar.com/avatar/{md5}?{params}".format(
         md5=hashlib.md5(email).hexdigest(),
-        params=urlencode({'d': default, 's': str(size)})
+        params=urlencode({"d": default, "s": str(size)}),
     )
     return url
