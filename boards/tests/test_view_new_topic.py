@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.urls import reverse, resolve
+from django.urls import resolve, reverse
 
 from ..forms import NewTopicForm
-from ..models import Board, Topic, Post
+from ..models import Board, Post, Topic
 from ..views import new_topic
 
 User = get_user_model()

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.forms import ModelForm
-from django.urls import resolve, reverse
 from django.test import TestCase
+from django.urls import resolve, reverse
 
 from ..views import UserUpdateView
 

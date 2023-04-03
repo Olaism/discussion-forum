@@ -1,13 +1,7 @@
 from django.urls import path
 
-from .views import (
-    BoardListView,
-    TopicListView,
-    new_topic,
-    PostEditView,
-    PostListView,
-    reply_topic,
-)
+from .views import (BoardListView, PostEditView, PostListView, TopicListView,
+                    new_topic, reply_topic)
 
 urlpatterns = [
     path("", BoardListView.as_view(), name="home"),

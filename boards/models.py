@@ -1,10 +1,10 @@
 import math
-from markdown import markdown
 
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.utils.html import mark_safe
 from django.utils.text import Truncator
+from markdown import markdown
 
 User = get_user_model()
 

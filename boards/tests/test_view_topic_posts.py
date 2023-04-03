@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
-from django.urls import reverse, resolve
 from django.test import TestCase
+from django.urls import resolve, reverse
 
-from ..models import Board, Topic, Post
+from ..models import Board, Post, Topic
 from ..views import PostListView
 
 User = get_user_model()

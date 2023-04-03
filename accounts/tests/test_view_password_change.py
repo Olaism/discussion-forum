@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
-from django.urls import reverse, resolve
+from django.contrib.auth.views import (PasswordChangeDoneView,
+                                       PasswordChangeView)
 from django.test import TestCase
+from django.urls import resolve, reverse
 
 User = get_user_model()
 

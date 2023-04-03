@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-from django.urls import reverse, resolve
 from django.test import TestCase
+from django.urls import resolve, reverse
 
 from ..forms import SignupForm
 from ..views import signup

@@ -1,14 +1,14 @@
-from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.shortcuts import get_object_or_404, render, redirect
+from django.db.models import Count
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView
 
 from .forms import NewTopicForm, PostForm
-from .models import Board, Topic, Post
+from .models import Board, Post, Topic
 
 
 @method_decorator(login_required, name="dispatch")
