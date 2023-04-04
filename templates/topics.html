@@ -35,12 +35,12 @@
             {% for topic in topics %}
             {% url 'topic_posts' board.pk topic.pk as topic_url  %}
             <tr>
-                <td class="row">
-                    <p class="mb-0">
+                <td scope="row">
+                    <!-- <p class="mb-0"> -->
                         <a href="{{ topic_url }}">
                             {{ topic.subject }}
                         </a>
-                    </p>
+                    <!-- </p> -->
                     <small class="text-muted">
                         Pages:
                         {% for i in topic.get_page_range %}

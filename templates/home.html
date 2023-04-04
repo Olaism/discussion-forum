@@ -1,17 +1,18 @@
 {% extends "_base.html" %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item text-light p-1">Home</li>
+    <li class="breadcrumb-item text-light p-1">Archives: Discussions</li>
 {% endblock breadcrumb %}
 
 
 {% block content %}
+</ul>
     <table class="table table-striped">
         <thead>
             <tr class="table-dark">
                 <th scope="col">Board</th>
-                <th scope="col">Posts</th>
                 <th scope="col">Topics</th>
+                <th scope="col">Posts</th>
                 <th scope="col">Last Post</th>
             </tr>
         </thead>
@@ -19,14 +20,14 @@
             {% for board in boards %}
             <tr>
                 <td scope="row">
-                    <a href="{% url 'board_topics' board.pk %}">{{ board.name }}</a>
+                    <a href="{% url 'board_topics' board.pk %}">{{ board.name|title }}</a>
                     <br />
                     <small class="text-small text-muted">
                         {{ board.description }}
                     </small>
                 </td>
-                <td>{{ board.get_posts_count }}</td>
                 <td>{{ board.topics.count }}</td>
+                <td>{{ board.get_posts_count }}</td>
                 <td>
                     {% with post=board.get_last_post %}
                         {% if post %}
@@ -37,7 +38,7 @@
                             </small>
                         {% else %}
                             <small class="text-muted">
-                                <em>No posts yet.</em>
+                                <em>No Topics</em>
                             </small>
                         {% endif %}
                     {% endwith %}
