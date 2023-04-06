@@ -18,6 +18,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # Local
     "accounts",
+    "blog",
     "boards",
     # Third-party
     "widget_tweaks",
