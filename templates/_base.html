@@ -71,12 +71,12 @@
         </nav>
     {% endblock nav %}
     {% block body %}
+    {% block breadcrumb %}
     <section class="breadcrumb-container">
         <ol class="breadcrumb">
-            {% block breadcrumb %}
-            {% endblock breadcrumb %}
         </ol>
     </section>
+    {% endblock breadcrumb %}
     <div class="container mt-3">
         {% block content %}
         {% endblock content %}
