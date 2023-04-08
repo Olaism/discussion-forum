@@ -15,7 +15,8 @@ class Post(models.Model):
         ('draft', 'Draft'),
         ('published', 'Published'),
     )
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=100)
+    highlight = models.CharField(max_length=255)
     slug = models.SlugField(
         max_length=255,
         unique_for_date='publish',
