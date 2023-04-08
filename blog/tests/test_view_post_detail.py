@@ -47,3 +47,7 @@ class PostDetailTests(TestCase):
         slug = self.published_post.slug
         view = resolve(f"/blog/{year}/{month}/{day}/{slug}/")
         self.assertEquals(view.func.view_class, PostDetailView)
+
+    def test_template_used(self):
+        self.assertTemplateUsed(self.response, '_base.html')
+        self.assertTemplateUsed(self.response, 'blog/post/detail.html')

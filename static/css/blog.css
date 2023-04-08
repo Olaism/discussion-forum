@@ -1,0 +1,42 @@
+.blog-container {
+    display: grid;
+}
+
+.post-detail h1 {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.5rem;
+}
+
+.post-detail ul {
+    display: inline-flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+}
+
+
+.post-detail li {
+    padding-right: 0.5rem;
+}
+
+@media screen and (min-width: 768px) {
+    .blog-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .post .card-body{
+        display: grid;
+        grid-template-rows: 30px 1fr 40px;
+    }
+
+    ul.info-list li {
+        padding-right: 0 1rem;
+    }
+
+    .post-detail p {
+        font-size: 1.2rem;
+    }
+
+
+}

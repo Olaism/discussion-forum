@@ -10,7 +10,12 @@ class PostListView(ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Post.published.all()
+        return Post.published.all()[1:]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['latest_post'] = Post.published.first()
+        return context
 
 
 class PostDetailView(DetailView):

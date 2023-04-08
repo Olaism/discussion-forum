@@ -1,9 +1,30 @@
 {% extends '_base.html' %}
 
-{% block title %}
-{% endblock title %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+{% endblock stylesheet %}
+
+{% block title %}{{ post.title }} - Django blogs {% endblock title %}
+
+{% block breadcrumb %}
+{% endblock breadcrumb %}
 
 {% block content %}
-<h3>{{ post.title }}</h3>
-<p>{{ post.body }}</p>
+<div class="post-detail">
+    <h1>{{ post.title }}</h1>
+    <ul>
+        <li>By {{ post.author }}</li>
+        <li>
+            <i class="fa-solid fa-calendar-days text-muted"></i>
+            <span class="text-muted">{{ post.publish|date:"M d, Y" }}</span>
+        </li>
+        <li>
+            <i class="fa-regular fa-comment text-muted"></i>
+            <span class="text-muted">35 comments</span>
+        </li>
+    </ul>
+    {{ post.body|linebreaks }}
+</div>
 {% endblock content %}

@@ -6,34 +6,24 @@
     <link rel="stylesheet" href="{% static 'css/blog.css' %}">
 {% endblock stylesheet %}
 
+{% block title %} Home | Django blogs {% endblock title %}
+
 {% block breadcrumb %}
 {% endblock breadcrumb %}
 
 {% block content %}
     <section class="blog-container">
-        {% if latest_post %}
-        <section class="latest">
-            <p class="post-date">{{ post.publish|date:"M d, Y" }}</p>
-            <h2 class="post-title">{{ post.title }}</h2>
-            <img src="{% static 'img/display.jpg' %}" alt="" class="post-img">
-            <p class="post-desc">{{ post.body|truncatewords:10|linebreaks }}</p>
-        </section>
-        {% endif %}
-
         {% for post in posts %}
-        <article class="posts">
-            <div class="post">
-                <img src="{% static 'img/display.jpg' %}" alt="" class="post-img">
-                <div class="post-detail">
-                    <p class="post-date">{{ post.publish|date:"M d, Y" }}</p>
-                    <h3 class="post-title">{{ post.title }}</h3>
-                    <p class="post-desc">{{ post.body|truncatewords:30|linebreaks }}</p>
+            <div class="card post mt-3">
+                <div class="card-body">
+                    <p class="text-muted">{{ post.publish|date:"M d, Y" }}</p>
+                    <div class="post-detail">
+                        <h3 >{{ post.title }}</h3>
+                        <p>{{ post.body|truncatewords:30|linebreaks }}</p>
+                    </div>
+                    <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary post-btn">Read Now</a>
                 </div>
             </div>
-        </article>
         {% endfor %}
-        <aside>
-            Something here
-        </aside>
     </section>
 {% endblock content %}
