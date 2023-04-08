@@ -26,49 +26,7 @@
 </head>
 <body>
     {% block nav %}
-        <nav class="navbar">
-            <div class="nav-center">
-                <div class="nav-header">
-                    <h1 class="nav-title"><a href="{% url 'home' %}">Discussion Forum</a></h1>
-                    <button class="nav-toggle-btn">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                </div>
-                <ul class="nav-lists">
-                    <li class="nav-items"><a href="{% url 'home' %}" class="nav-link">Home</a></li>
-                    <li class="nav-items"><a href="#" class="nav-link">Topics</a></li>
-                    <li class="nav-items"><a href="#" class="nav-link">Posts</a></li>
-                    <li class="nav-items"><a href="#" class="nav-link">Users</a></li>
-                </ul>
-                <ul class="social-icons">
-                    <li>
-                        <a href="https://www.facebook.com">
-                            <i class="fab fa-facebook"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.twitter.com">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.whatsapp.com">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.instagram.com">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.shopify.com">
-                            <i class="fab fa-shopify"></i>
-                        </a>
-                    </li>
-                  </ul>
-            </div>
-        </nav>
+        {% include 'includes/navbar.html' %}
     {% endblock nav %}
     {% block body %}
     {% block breadcrumb %}
@@ -82,7 +40,7 @@
         {% endblock content %}
     </div>
     {% endblock body %}
-    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     {% block extra_js %}{% endblock extra_js %}
 </body>
 </html>

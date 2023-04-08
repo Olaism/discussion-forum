@@ -47,68 +47,6 @@ a {
     font-family: 'Barlow', sans-serif;
 }
 
-/* Nav */
-
-nav {
-    background: var(--clr-white);
-    box-shadow: var(--light-shadow);
-}
-
-.nav-header {
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem;
-}
-
-h1.nav-title {
-    font-size: 1.5rem;
-}
-
-.nav-lists a,
-h1.nav-title a {
-    color: var(--clr-grey-3);
-    font-size: 1rem;
-    text-transform: capitalize;
-    letter-spacing: var(--spacing);
-    display: block;
-    padding: 0.5rem 1rem;
-    transition: var(--transition);
-}
-.nav-lists a:hover {
-    background: var(--clr-primary-8);
-    color: var(--clr-primary-5);
-    padding-left: 1.5rem;
-}
-
-.nav-toggle-btn {
-    font-size: 1.5rem;
-    color: var(--clr-grey-1);
-    background: transparent;
-    border-color: transparent;
-    transition: var(--transition);
-    cursor: pointer;
-}
-
-.nav-toggle-btn:hover {
-    color: var(--clr-primary-1);
-    transform: rotate(90deg);
-}
-
-.nav-lists {
-    height: 0;
-    overflow: hidden;
-    transition: var(--transition);
-}
-.show-nav-lists {
-    height: auto;
-}
-
-.social-icons {
-    display:none;
-}
-
 /* Breadcrumb */
 
 .breadcrumb-container {
@@ -129,59 +67,6 @@ h1.nav-title a {
 .breadcrumb-item {
     font-size: 1.5rem;
     font-weight: 900;
-}
-
-/* Table */
-
-
-/* Responsive */
-
-@media screen and (min-width: 800px) {
-    .nav-center {
-        width: 100vw;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem 3rem;
-    }
-
-    .nav-header {
-        padding: 0;
-        width: auto;
-    }
-
-    .nav-toggle-btn {
-        display: none;
-    }
-
-    .nav-lists {
-        height: auto;
-        display: flex;
-    }
-
-    .nav-lists a {
-        padding: 0;
-        margin: 0 0.5rem;
-    }
-
-    .nav-lists a:hover {
-        padding: 0;
-        background: transparent;
-    }
-
-    .social-icons {
-        display: flex;
-    }
-
-    .social-icons a {
-        margin: 0 0.5rem;
-        color: var(--clr-primary-5);
-        transition: var(--transition);
-    }
-
-    .social-icons a:hover {
-        color: var(--clr-primary-7);
-    }
 }
 
 

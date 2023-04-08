@@ -19,6 +19,7 @@ class PostDetailTests(TestCase):
 
         self.published_post = Post.objects.create(
             title='published blog post',
+            highlight='my highlight',
             author=user,
             body='test body',
             status='published'
@@ -26,6 +27,7 @@ class PostDetailTests(TestCase):
 
         self.unpublished_post = Post.objects.create(
             title='draft blog post',
+            highlight='my highlight',
             author=user,
             body='test body',
         )
