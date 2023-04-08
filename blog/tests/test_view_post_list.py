@@ -17,3 +17,7 @@ class PostListViewTest(TestCase):
     def test_view_function(self):
         view = resolve('/blog/')
         self.assertEquals(view.func.view_class, PostListView)
+
+    def test_template_used(self):
+        self.assertTemplateUsed(self.response, '_base.html')
+        self.assertTemplateUsed(self.response, 'blog/post/list.html')
