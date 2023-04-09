@@ -1,0 +1,36 @@
+{% extends "_base.html" %}
+
+{% block title %}Share post | {{ post.title }}{% endblock title %}
+
+{% block breadcrumb %}
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card">
+                {% if sent %}
+                    <div class="card-header">
+                        <h4 class="text-success">Post sent successfully</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="alert alert-success">
+                            {{ post.title }} was successfully sent to {{ form.to }}
+                        </p>
+                    </div>
+                {% else %}
+                    <div class="card-header">
+                        <h4>Share Post</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            {% include 'includes/form.html' %}
+                            <button type="submit" class="btn btn-success">Share</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
