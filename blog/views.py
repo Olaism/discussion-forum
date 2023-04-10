@@ -3,7 +3,11 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, FormView, ListView
 
-from .forms import EmailPostForm
+from .forms import (
+    AnonymousCommentForm,
+    CommentForm,
+    EmailPostForm,
+)
 from .models import Post
 
 
@@ -22,20 +26,47 @@ class PostListView(ListView):
         return context
 
 
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'blog/post/detail.html'
-    context_object_name = 'post'
+def post_detail(request, slug, year, month, day):
+    post = get_object_or_404(
+        Post,
+        slug=slug,
+        status='published',
+        publish__year=year,
+        publish__month=month,
+        publish__day=day
+    )
 
-    def get_object(self):
-        return get_object_or_404(
-            Post,
-            slug=self.kwargs.get('slug'),
-            status='published',
-            publish__year=self.kwargs.get('year'),
-            publish__month=self.kwargs.get('month'),
-            publish__day=self.kwargs.get('day')
-        )
+    # list active comments under post
+    comments = post.comments.filter(active=True)
+
+    # handle get requests
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.name = request.user.username
+                comment.email = request.user.email
+                comment.save()
+        else:
+            form = AnonymousCommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.save()
+
+    else:
+        if request.user.is_authenticated:
+            form = CommentForm()
+        else:
+            form = AnonymousCommentForm()
+
+    return render(request, 'blog/post/detail.html', {
+        'post': post,
+        'comments': comments,
+        'form': form
+    })
 
 
 def post_share(request, pk):

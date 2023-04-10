@@ -3,7 +3,7 @@ from django.urls import reverse, resolve
 from django.test import TestCase
 
 from ..models import Post
-from ..views import PostDetailView
+from ..views import post_detail
 
 User = get_user_model()
 
@@ -48,7 +48,7 @@ class PostDetailTests(TestCase):
         day = self.published_post.publish.day
         slug = self.published_post.slug
         view = resolve(f"/blog/{year}/{month}/{day}/{slug}/")
-        self.assertEquals(view.func.view_class, PostDetailView)
+        self.assertEquals(view.func, post_detail)
 
     def test_template_used(self):
         self.assertTemplateUsed(self.response, '_base.html')

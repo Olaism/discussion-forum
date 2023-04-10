@@ -22,7 +22,7 @@
         </li>
         <li>
             <i class="fa-regular fa-comment text-muted"></i>
-            <span class="text-muted">35 comments</span>
+            <span class="text-muted">{{ comments.count }} comment{{ comments.count|pluralize }}</span>
         </li>
     </ul>
 
@@ -31,5 +31,33 @@
     <div class="mb-2">
         <a href="{% url 'blog:post_share' pk=post.pk %}" class="btn btn-outline-primary">Share Post</a>
     </div>
+
+    <!-- comments -->
+    <div class="comments mt-3">
+        <div class="card my-3">
+            <div class="card-body">
+                <h5>Add a comment</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    {% include 'includes/form.html' %}
+                    <button type="submit" class="btn btn-success">Add comment</button>
+                </form>
+            </div>
+        </div>
+
+        {% for comment in comments %}
+        <div class="card mb-3">
+            <div class="card-header text-muted">
+                {{ comment.email }} - {{ comment.created|date:"M d, Y" }}
+            </div>
+            <div class="card-body">
+                {{ comment.body|linebreaks }}
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-danger" role="alert">No comment yet ):</div>
+        {% endfor %}
+    </div>
 </div>
+
 {% endblock content %}
