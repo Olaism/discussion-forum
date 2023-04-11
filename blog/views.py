@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import DetailView, FormView, ListView
 
 from .forms import (
@@ -49,12 +49,14 @@ def post_detail(request, slug, year, month, day):
                 comment.name = request.user.username
                 comment.email = request.user.email
                 comment.save()
+                return redirect(post.get_absolute_url())
         else:
             form = AnonymousCommentForm(request.POST)
             if form.is_valid():
                 comment = form.save(commit=False)
                 comment.post = post
                 comment.save()
+                return redirect(post.get_absolute_url())
 
     else:
         if request.user.is_authenticated:

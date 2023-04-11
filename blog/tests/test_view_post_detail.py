@@ -2,13 +2,14 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse, resolve
 from django.test import TestCase
 
-from ..models import Post
+from ..forms import AnonymousCommentForm, CommentForm
+from ..models import Comment, Post
 from ..views import post_detail
 
 User = get_user_model()
 
 
-class PostDetailTests(TestCase):
+class PostDetailTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create_user(
@@ -32,7 +33,14 @@ class PostDetailTests(TestCase):
             body='test body',
         )
 
-        self.response = self.client.get(self.published_post.get_absolute_url())
+        self.url = self.published_post.get_absolute_url()
+
+
+class PostDetailTests(PostDetailTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.response = self.client.get(self.url)
 
     def test_published_post_view_status_code(self):
         self.assertEquals(self.response.status_code, 200)
@@ -53,3 +61,129 @@ class PostDetailTests(TestCase):
     def test_template_used(self):
         self.assertTemplateUsed(self.response, '_base.html')
         self.assertTemplateUsed(self.response, 'blog/post/detail.html')
+
+    def test_form_instance_for_anonymous_user(self):
+        form = self.response.context.get('form')
+        self.assertIsInstance(form, AnonymousCommentForm)
+
+    def test_form_instance_for_authenticated_user(self):
+        # login user
+        self.client.login(
+            username='testme',
+            password='testmepassword',
+        )
+        response = self.client.get(self.url)  # generate response
+        form = response.context.get('form')
+        self.assertIsInstance(form, CommentForm)
+
+    def test_csrf(self):
+        self.assertContains(self.response, 'csrfmiddlewaretoken')
+
+    def test_form_inputs_for_anonymous_user(self):
+        # test form inputs for anonymous user
+        self.assertContains(self.response, '<input', 4)
+        self.assertContains(self.response, 'type="text"', 1)
+        self.assertContains(self.response, 'type="email"', 1)
+        self.assertContains(self.response, '<textarea', 1)
+
+    def test_form_inputs_for_authenticated_user(self):
+        # login user
+        self.client.login(
+            username='testme',
+            password='testmepassword',
+        )
+        response = self.client.get(self.url)
+        self.assertContains(response, '<textarea', 1)
+
+
+class PostDetailCommentPostTest(PostDetailTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.comment = Comment.objects.create(
+            post=self.published_post,
+            name='testuser01',
+            email='testuser01@gmail.com',
+            body='my comment'
+        )
+        self.response = self.client.get(self.url)
+
+    def test_comment_details(self):
+        self.assertContains(self.response, self.comment.body)
+        self.assertContains(self.response, self.comment.email)
+
+
+class AnonymousSuccessfulPostCommentTest(PostDetailTestCase):
+    """ Check for succesful post request with AnonymousCommentForm """
+
+    def setUp(self):
+        super().setUp()
+        self.response = self.client.post(self.url, {
+            'name': 'testuser',
+            'email': 'testuser@example.com',
+            'body': 'i added a comment'
+        })
+
+    def test_redirections(self):
+        self.assertRedirects(self.response, self.url)
+
+    def test_comment_creation(self):
+        self.assertTrue(Comment.objects.exists())
+        self.assertEquals(self.published_post.comments.count(), 1)
+
+
+class AuthenticatedSuccessfulPostCommentTest(PostDetailTestCase):
+    """ Check for succesful post request with CommentForm """
+
+    def setUp(self):
+        super().setUp()
+        self.response = self.client.post(self.url, {
+            'name': 'testuser',
+            'email': 'testuser@example.com',
+            'body': 'i added a comment'
+        })
+
+    def test_redirections(self):
+        self.assertRedirects(self.response, self.url)
+
+    def test_comment_creation(self):
+        self.assertTrue(Comment.objects.exists())
+        self.assertEquals(self.published_post.comments.count(), 1)
+
+
+class AnonymousInvalidCommentTest(PostDetailTestCase):
+    """
+    Check error rendering for the AnonymousCommentForm
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.response = self.client.post(self.url, {})
+
+    def test_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_form_error(self):
+        form = self.response.context.get('form')
+        self.assertTrue(form.errors)
+
+
+class AuthenticatedInvalidCommentTest(PostDetailTestCase):
+    """
+    Check error rendering for the CommentForm
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.client.login(
+            username='testme',
+            password='testmepassword'
+        )
+        self.response = self.client.post(self.url, {})
+
+    def test_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_form_error(self):
+        form = self.response.context.get('form')
+        self.assertTrue(form.errors)
