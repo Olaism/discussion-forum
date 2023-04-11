@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect, render
@@ -10,6 +11,8 @@ from .forms import (
 )
 from .models import Post
 
+from taggit.models import Tag
+
 
 class PostListView(ListView):
     model = Post
@@ -18,11 +21,18 @@ class PostListView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return Post.published.all()[1:]
+        tag_slug = self.kwargs.get('tag_slug', None)
+        self.tag = None
+        queryset = Post.published.all()
+        if tag_slug:
+            self.tag = get_object_or_404(Tag, slug=tag_slug)
+            queryset = queryset.filter(tags__in=[self.tag])
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['latest_post'] = Post.published.first()
+        context['tag'] = self.tag
         return context
 
 
@@ -35,6 +45,13 @@ def post_detail(request, slug, year, month, day):
         publish__month=month,
         publish__day=day
     )
+
+    # get similar posts depending on the post tags id
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.published.filter(
+        tags__in=post_tags_ids).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
+        .order_by('-same_tags', '-publish')[:4]
 
     # list active comments under post
     comments = post.comments.filter(active=True)
@@ -67,6 +84,7 @@ def post_detail(request, slug, year, month, day):
     return render(request, 'blog/post/detail.html', {
         'post': post,
         'comments': comments,
+        'similar_posts': similar_posts,
         'form': form
     })
 

@@ -4,6 +4,8 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 
+from taggit.managers import TaggableManager
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -17,6 +19,7 @@ class Post(models.Model):
     )
     title = models.CharField(max_length=100)
     highlight = models.CharField(max_length=255)
+    tags = TaggableManager()
     slug = models.SlugField(
         max_length=255,
         unique_for_date='publish',

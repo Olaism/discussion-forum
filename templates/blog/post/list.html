@@ -8,15 +8,29 @@
 
 {% block title %} Home | Django blogs {% endblock title %}
 
-{% block breadcrumb %}
-{% endblock breadcrumb %}
+{% block breadcrumb %}{% endblock breadcrumb %}
 
 {% block content %}
+    {% if tag %}
+    <div class="alert alert-primary">
+        Post tagged with "{{ tag.name }}"
+    </div>
+    {% endif %}
+
     <section class="blog-container">
         {% for post in posts %}
             <div class="card post mt-3">
                 <div class="card-body">
-                    <p class="text-muted">{{ post.publish|date:"M d, Y" }}</p>
+                    <div class="row">
+                        <div class="col-4 text-muted">{{ post.publish|date:"M d, Y" }}</div>
+                        <div class="col-8">
+                            {% for tag in post.tags.all %}
+                                <a href="{% url 'blog:post_list_by_tag' tag.slug %}">
+                                    <span class="badge bg-secondary">{{ tag.name }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
                     <div class="post-detail">
                         <h3 >{{ post.title }}</h3>
                         <p>{{ post.highlight }}</p>
@@ -25,7 +39,7 @@
                 </div>
             </div>
         {% endfor %}
-
-        {% include 'includes/pagination.html' %}
     </section>
+    {% include 'includes/pagination.html' %}
+    
 {% endblock content %}

@@ -13,23 +13,35 @@
 
 {% block content %}
 <div class="post-detail container">
-    <h1>{{ post.title }}</h1>
-    <ul>
-        <li>By {{ post.author }}</li>
-        <li>
-            <i class="fa-solid fa-calendar-days text-muted"></i>
-            <span class="text-muted">{{ post.publish|date:"M d, Y" }}</span>
-        </li>
-        <li>
-            <i class="fa-regular fa-comment text-muted"></i>
-            <span class="text-muted">{{ comments.count }} comment{{ comments.count|pluralize }}</span>
-        </li>
-    </ul>
-
-    {{ post.body|linebreaks }}
-
-    <div class="mb-2">
-        <a href="{% url 'blog:post_share' pk=post.pk %}" class="btn btn-outline-primary">Share Post</a>
+    <div class="row justify-content-around">
+        <div class="col col-lg-8 col-md-10 col-sm-12">
+            <h1>{{ post.title }}</h1>
+            <ul>
+                <li>By {{ post.author }}</li>
+                <li>
+                    <i class="fa-solid fa-calendar-days text-muted"></i>
+                    <span class="text-muted">{{ post.publish|date:"M d, Y" }}</span>
+                </li>
+                <li>
+                    <i class="fa-regular fa-comment text-muted"></i>
+                    <span class="text-muted">{{ comments.count }} comment{{ comments.count|pluralize }}</span>
+                </li>
+            </ul>
+        
+            {{ post.body|linebreaks }}
+        
+            <div class="mb-2">
+                <a href="{% url 'blog:post_share' pk=post.pk %}" class="btn btn-outline-primary">Share Post</a>
+            </div>
+        </div>
+        <div class="col col-lg-4 col-md-2 col-sm-12">
+            <h5>Similar Posts</h5>
+            {% for post in similar_posts %}
+                <p class="my-2 text-decoration-underline lead">
+                    <a href={{ post.get_absolute_url }}>{{ post.title }}</a>
+                </p>
+            {% endfor %}
+        </div>
     </div>
 
     <!-- comments -->
