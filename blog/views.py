@@ -33,6 +33,8 @@ class PostListView(ListView):
         context = super().get_context_data(**kwargs)
         context['latest_post'] = Post.published.first()
         context['tag'] = self.tag
+        context['most_commented_posts'] = Post.published.annotate(
+            total_comments=Count('comments')).order_by('-total_comments')[:5]
         return context
 
 

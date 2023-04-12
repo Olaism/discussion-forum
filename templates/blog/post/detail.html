@@ -12,64 +12,66 @@
 {% endblock breadcrumb %}
 
 {% block content %}
-<div class="post-detail container">
-    <div class="row justify-content-around">
-        <div class="col col-lg-8 col-md-10 col-sm-12">
-            <h1>{{ post.title }}</h1>
-            <ul>
-                <li>By {{ post.author }}</li>
-                <li>
-                    <i class="fa-solid fa-calendar-days text-muted"></i>
-                    <span class="text-muted">{{ post.publish|date:"M d, Y" }}</span>
-                </li>
-                <li>
-                    <i class="fa-regular fa-comment text-muted"></i>
-                    <span class="text-muted">{{ comments.count }} comment{{ comments.count|pluralize }}</span>
-                </li>
-            </ul>
-        
-            {{ post.body|linebreaks }}
-        
-            <div class="mb-2">
-                <a href="{% url 'blog:post_share' pk=post.pk %}" class="btn btn-outline-primary">Share Post</a>
-            </div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9 col-md-8 col-sm-12">
+        <h1>{{ post.title }}</h1>
+        <ul>
+            <li>By {{ post.author }}</li>
+            <li>
+                <i class="fa-solid fa-calendar-days text-muted"></i>
+                <span class="text-muted">{{ post.publish|date:"M d, Y" }}</span>
+            </li>
+            <li>
+                <i class="fa-regular fa-comment text-muted"></i>
+                <span class="text-muted">{{ comments.count }} comment{{ comments.count|pluralize }}</span>
+            </li>
+        </ul>
+    
+        {{ post.body|linebreaks }}
+    
+        <div class="mb-2">
+            <a href="{% url 'blog:post_share' pk=post.pk %}" class="btn btn-outline-primary">Share Post</a>
         </div>
-        <div class="col col-lg-4 col-md-2 col-sm-12">
-            <h5>Similar Posts</h5>
-            {% for post in similar_posts %}
-                <p class="my-2 text-decoration-underline lead">
-                    <a href={{ post.get_absolute_url }}>{{ post.title }}</a>
-                </p>
+
+        <!-- comments -->
+        <div class="comments mt-3">
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5>Add a comment</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% include 'includes/form.html' %}
+                        <button type="submit" class="btn btn-success">Add comment</button>
+                    </form>
+                </div>
+            </div>
+
+            {% for comment in comments %}
+            <div class="card mb-3">
+                <div class="card-header text-muted">
+                    {{ comment.email }} - {{ comment.created|date:"M d, Y" }}
+                </div>
+                <div class="card-body">
+                    {{ comment.body|linebreaks }}
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-danger" role="alert">No comment yet ):</div>
             {% endfor %}
         </div>
     </div>
-
-    <!-- comments -->
-    <div class="comments mt-3">
-        <div class="card my-3">
-            <div class="card-body">
-                <h5>Add a comment</h5>
-                <form method="post">
-                    {% csrf_token %}
-                    {% include 'includes/form.html' %}
-                    <button type="submit" class="btn btn-success">Add comment</button>
-                </form>
-            </div>
-        </div>
-
-        {% for comment in comments %}
-        <div class="card mb-3">
-            <div class="card-header text-muted">
-                {{ comment.email }} - {{ comment.created|date:"M d, Y" }}
-            </div>
-            <div class="card-body">
-                {{ comment.body|linebreaks }}
-            </div>
-        </div>
-        {% empty %}
-        <div class="alert alert-danger" role="alert">No comment yet ):</div>
-        {% endfor %}
+    <div class="col">
+        <ul class="list-group">
+            <h5>Similar Posts</h5>
+            {% for post in similar_posts %}
+                <li class="list-group-item my-1 lead">
+                    <a href={{ post.get_absolute_url }}>{{ post.title }}</a>
+                </li>
+            {% empty %}
+            <li class="list-group-item alert alert-info">Similar posts not found ):</li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
-
 {% endblock content %}
