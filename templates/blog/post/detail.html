@@ -1,6 +1,6 @@
 {% extends '_base.html' %}
 
-{% load static %}
+{% load static blog_tags %}
 
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'css/blog.css' %}">
@@ -16,7 +16,7 @@
 <div class="row justify-content-center">
     <div class="col-lg-9 col-md-8 col-sm-12">
         <h1>{{ post.title }}</h1>
-        <ul>
+        <ul class="post-detail-header">
             <li>By {{ post.author }}</li>
             <li>
                 <i class="fa-solid fa-calendar-days text-muted"></i>
@@ -28,7 +28,7 @@
             </li>
         </ul>
     
-        {{ post.body|linebreaks }}
+        {{ post.body|markdown }}
     
         <div class="mb-2">
             <a href="{% url 'blog:post_share' pk=post.pk %}" class="btn btn-outline-primary">Share Post</a>
@@ -53,7 +53,7 @@
                     {{ comment.email }} - {{ comment.created|date:"M d, Y" }}
                 </div>
                 <div class="card-body">
-                    {{ comment.body|linebreaks }}
+                    {{ comment.body }}
                 </div>
             </div>
             {% empty %}
@@ -66,7 +66,7 @@
             <h5>Similar Posts</h5>
             {% for post in similar_posts %}
                 <li class="list-group-item my-1 lead">
-                    <a href={{ post.get_absolute_url }}>{{ post.title }}</a>
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                 </li>
             {% empty %}
             <li class="list-group-item alert alert-info">Similar posts not found ):</li>
