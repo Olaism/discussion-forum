@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+
+{% block title %}
+{% endblock title %}
+
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="lead">Your result for "{{ query }}"</div>
+
+            <ul class="list-group mt-3">
+                <div class="row justify-content-between">
+                    <div class="col-8">
+                        {% for result in object_list %}
+                            <li class="list-group-item mt-1">
+                                <span class="lead text-muted">
+                                    {{ forloop.counter }}.
+                                </span>
+                                <a href="{{ result.get_absolute_url }}">{{ result }}</a>
+                            </li>
+                        {% empty %}
+                            No result found
+                        {% endfor %}
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </div>
+{% endblock content %}

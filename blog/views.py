@@ -2,7 +2,7 @@ from django.db.models import Count
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import DetailView, ListView
 
 from .forms import (
     AnonymousCommentForm,

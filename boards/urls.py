@@ -13,5 +13,5 @@ urlpatterns = [
         "<int:pk>/topics/<int:topic_pk>/posts/<int:post_pk>/edit/",
         PostEditView.as_view(),
         name="edit_post",
-    ),
+    )
 ]
