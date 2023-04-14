@@ -3,6 +3,7 @@
 {% block title %}
 {% endblock title %}
 
+{% block breadcrumb %}{% endblock breadcrumb %}
 
 {% block content %}
     <div class="row justify-content-center">
@@ -12,15 +13,16 @@
             <ul class="list-group mt-3">
                 <div class="row justify-content-between">
                     <div class="col-8">
-                        {% for result in object_list %}
+                        {% for topic in topics %}
                             <li class="list-group-item mt-1">
-                                <span class="lead text-muted">
-                                    {{ forloop.counter }}.
-                                </span>
-                                <a href="{{ result.get_absolute_url }}">{{ result }}</a>
+                                <a href="{{ topic.get_absolute_url }}" class="text-dark">{{ topic }}</a> - 
+                                <span class="text-muted">{{ topic.board }}</span>
                             </li>
-                        {% empty %}
-                            No result found
+                        {% endfor %}
+                        {% for result in blog_results %}
+                            <li class="list-group-item mt-1">
+                                <a href="{{ result.get_absolute_url }}" class="text-dark">{{ result }}</a>
+                            </li>
                         {% endfor %}
                     </div>
                 </div>

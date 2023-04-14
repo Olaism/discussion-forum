@@ -2,6 +2,7 @@ import math
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.urls import reverse
 from django.utils.html import mark_safe
 from django.utils.text import Truncator
 
@@ -16,6 +17,9 @@ class Board(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('board_topics', kwargs={'pk': self.pk})
 
     def get_posts_count(self):
         return Post.objects.filter(topic__board=self).count()
@@ -34,6 +38,9 @@ class Topic(models.Model):
     def __str__(self):
         truncated_subject = Truncator(self.subject)
         return truncated_subject.chars(30)
+
+    def get_absolute_url(self):
+        return reverse('topic_posts', kwargs={'pk': self.board.pk, 'topic_pk': self.pk})
 
     def get_page_count(self):
         count = self.posts.count()

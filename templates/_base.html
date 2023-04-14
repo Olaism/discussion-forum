@@ -28,18 +28,22 @@
     {% block nav %}
         {% include 'includes/navbar.html' %}
     {% endblock nav %}
+
     {% block body %}
-    {% block breadcrumb %}
-    <section class="breadcrumb-container">
+    <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
+            {% block breadcrumb %}
+            <li class="breadcrumb-item active" aria-current="page">Home</li>
+            {% endblock breadcrumb %}
         </ol>
-    </section>
-    {% endblock breadcrumb %}
+      </nav>
+
     <div class="container-lg mt-3">
         {% block content %}
         {% endblock content %}
     </div>
     {% endblock body %}
+
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     {% block extra_js %}{% endblock extra_js %}
 </body>
