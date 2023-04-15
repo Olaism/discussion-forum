@@ -47,3 +47,6 @@ class TopicPostsTests(TopicPostsTestCase):
     def test_resolve_url(self):
         view = resolve(f"/boards/{self.board.pk}/topics/{self.topic.pk}/")
         self.assertEquals(view.func.view_class, PostListView)
+
+    def test_template_used(self):
+        self.assertTemplateUsed(self.response, 'boards/topic_posts.html')

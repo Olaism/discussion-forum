@@ -26,7 +26,7 @@
 <form method="post" class="mb-4" novalidate>
     {% csrf_token %}
     {% include 'includes/form.html' %}
-    <button type="submit">Save Changes</button>
+    <button type="submit" class="btn btn-success">Save Changes</button>
     <a href="{% url 'topic_posts' post.topic.board.pk post.topic.pk %}" 
         class="btn btn-outline-secondary" role="button">Cancel</a>
 </form>

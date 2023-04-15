@@ -102,8 +102,11 @@ class PostEditViewTests(PostEditViewTestCase):
         """
         The view must contain two inputs: csrf, message textarea
         """
-        self.assertContains(self.response, "<input", 1)
+        self.assertContains(self.response, "<input", 2)
         self.assertContains(self.response, "<textarea", 1)
+
+    def test_template_used(self):
+        self.assertTemplateUsed(self.response, 'boards/edit_post.html')
 
 
 class SuccessfulPostEditViewTest(PostEditViewTestCase):

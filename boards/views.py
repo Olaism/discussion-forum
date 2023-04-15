@@ -14,14 +14,14 @@ from .models import Board, Post, Topic
 @method_decorator(login_required, name="dispatch")
 class BoardListView(ListView):
     model = Board
-    template_name = "home.html"
+    template_name = "boards/home.html"
     context_object_name = "boards"
 
 
 @method_decorator(login_required, name="dispatch")
 class TopicListView(ListView):
     model = Topic
-    template_name = "topics.html"
+    template_name = "boards/topics.html"
     context_object_name = "topics"
     paginate_by = 20
 
@@ -55,14 +55,14 @@ def new_topic(request, pk):
             return redirect("topic_posts", pk=pk, topic_pk=topic.pk)
     else:
         form = NewTopicForm()
-    return render(request, "new_topic.html", {"board": board, "form": form})
+    return render(request, "boards/new_topic.html", {"board": board, "form": form})
 
 
 @method_decorator(login_required, name="dispatch")
 class PostListView(ListView):
     model = Post
     context_object_name = "posts"
-    template_name = "topic_posts.html"
+    template_name = "boards/topic_posts.html"
     paginate_by = 20
 
     def get_context_data(self, **kwargs):
@@ -104,7 +104,7 @@ def reply_topic(request, pk, topic_pk):
             return redirect(topic_post_url)
     else:
         form = PostForm()
-    return render(request, "reply_topic.html", {"topic": topic, "form": form})
+    return render(request, "boards/reply_topic.html", {"topic": topic, "form": form})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -112,7 +112,7 @@ class PostEditView(UpdateView):
     model = Post
     fields = ("message",)
     pk_url_kwargs = "post_pk"
-    template_name = "edit_post.html"
+    template_name = "boards/edit_post.html"
     context_object_name = "post"
 
     def get_queryset(self):

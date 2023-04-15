@@ -46,6 +46,9 @@ class NewTopicTests(TestCase):
         view = resolve("/boards/{0}/new/".format(self.board.pk))
         self.assertEqual(view.func, new_topic)
 
+    def test_template_used(self):
+        self.assertTemplateUsed('boards/new_topic.html')
+
     def test_new_topic_view_contains_link_back_to_board_topics_view(self):
         board_topics_url = reverse("board_topics", kwargs={"pk": self.board.pk})
         self.assertContains(self.response, 'href="{0}"'.format(board_topics_url))

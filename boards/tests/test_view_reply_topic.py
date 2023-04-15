@@ -56,9 +56,11 @@ class ReplyTopicTests(ReplyTopicTestCase):
         self.assertIsInstance(form, PostForm)
 
     def test_form_inputs(self):
-        self.assertContains(self.response, "<input", 1)
+        self.assertContains(self.response, "<input", 2)
         self.assertContains(self.response, "<textarea", 1)
 
+    def test_template_used(self):
+        self.assertTemplateUsed(self.response, 'boards/reply_topic.html')
 
 class SuccessfulReplyTopicTest(ReplyTopicTestCase):
     def setUp(self):
