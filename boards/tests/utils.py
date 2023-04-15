@@ -7,6 +7,14 @@ def create_board(name, description):
         description=description,
     )
 
+def create_boards(num=20):
+    # create num of boards and return the last created board
+    for i in range(num):
+        return Board.objects.create(
+            name='board {}'.format(i),
+            description = 'board description {}'.format(i)
+        )
+
 def create_topic(board, subject, starter):
     # creates a new topic in the database given a board instance
     return Topic.objects.create(
@@ -15,6 +23,14 @@ def create_topic(board, subject, starter):
         starter=starter
     )
 
+def create_topics(board, starter, num=20):
+    for i in range(num):
+        return Topic.objects.create(
+            board=board,
+            subject=f"subject {i}",
+            starter=starter
+        )
+
 def create_post(topic, message, author):
     # creates a new post given a topic instance
     return Post.objects.create(
@@ -22,3 +38,13 @@ def create_post(topic, message, author):
         topic = topic,
         created_by = author
     )
+
+
+def create_posts(topic, author, num=20):
+    # creates num posts and return the last created post
+    for i in range(num):
+        return Post.objects.create(
+            message = f"message {i}",
+            topic = topic,
+            created_by = author
+        )
