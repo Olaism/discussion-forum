@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.urls import resolve, reverse
 
 from ..models import Board, Post, Topic
+from .utils import create_board, create_topic, create_post
 from ..views import PostEditView
 
 User = get_user_model()

@@ -2,6 +2,12 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import resolve, reverse
 
+from .utils import (
+    create_boards,
+    create_topic,
+    create_topics,
+    create_posts
+)
 from ..models import Board, Topic
 from ..views import TopicListView
 
@@ -10,9 +16,13 @@ User = get_user_model()
 
 class BoardTopicsTestCase(TestCase):
     def setUp(self):
-        self.board = Board.objects.create(
-            name="my django board", description="My django board app description"
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@example.com',
+            password='testpassword'
         )
+        self.board = create_boards()
+        self.topic = create_topic(board=self.board, subject='hello world', starter=self.user)
         self.url = reverse("board_topics", kwargs={"pk": self.board.pk})
 
 
@@ -23,17 +33,11 @@ class LoginRequiredBoardTopicsTest(BoardTopicsTestCase):
         self.assertRedirects(response, f"{login_url}?next={self.url}")
 
 
-class BoardTopicsTest(TestCase):
+class BoardTopicsTest(BoardTopicsTestCase):
     def setUp(self):
-        User.objects.create_user(
-            username="testuser01",
-            email="testuser01@gmail.com",
-            password="testpassword01",
-        )
-        self.board = Board.objects.create(
-            name="Olaism", description="Olaism bored")
+        super().setUp()
         url = reverse("board_topics", kwargs={"pk": self.board.pk})
-        self.client.login(username="testuser01", password="testpassword01")
+        self.client.login(username="testuser", password="testpassword")
         self.response = self.client.get(url)
 
     def test_board_topics_view_success_code(self):
@@ -56,3 +60,19 @@ class BoardTopicsTest(TestCase):
         new_topic_link = reverse("new_topic", kwargs={"pk": self.board.pk})
         self.assertContains(self.response, 'href="{0}"'.format(homepage_url))
         self.assertContains(self.response, 'href="{0}"'.format(new_topic_link))
+
+    def test_get_last_ten_response(self):
+        queryset = self.response.context.get('topics')
+        self.assertQuerysetEqual(queryset, Topic.objects.order_by(
+            '-last_updated')[:20])
+
+    def test_view_is_not_paginated_for_19_or_below_topics(self):
+        is_paginated = self.response.context.get('is_paginated')
+        self.assertFalse(is_paginated)
+
+    def test_view_is_paginated(self):
+        create_topics(board=self.board, starter=self.user, num=60)
+        url = reverse("board_topics", kwargs={"pk": self.board.pk})
+        response = self.client.get(url)
+        is_paginated = response.context.get('is_paginated')
+        self.assertTrue(is_paginated)
