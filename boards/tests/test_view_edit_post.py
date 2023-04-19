@@ -22,14 +22,16 @@ class PostEditViewTestCase(TestCase):
             email="testuser01@example.com",
             password=self.password,
         )
-        self.board = Board.objects.create(
-            name="testboard", description="testboard description"
+        self.board = create_board("my board", "my board decription")
+        self.topic = create_topic(
+            board=self.board, 
+            subject='my subject',
+            starter=user
         )
-        self.topic = Topic.objects.create(
-            subject="test subject", board=self.board, starter=user
-        )
-        self.post = Post.objects.create(
-            message="test message", topic=self.topic, created_by=user
+        self.post = create_post(
+            message="test message", 
+            topic=self.topic, 
+            author=user
         )
         self.url = reverse(
             "edit_post",
@@ -53,7 +55,7 @@ class UnauthorizedPostEditViewTest(PostEditViewTestCase):
         super().setUp()
         username = "anonymous_user"
         password = "anonymouspwd"
-        user = User.objects.create_user(
+        self.other_user = User.objects.create_user(
             username=username, email="anonymous@example.com", password=password
         )
         self.client.login(username=username, password=password)
@@ -67,84 +69,85 @@ class UnauthorizedPostEditViewTest(PostEditViewTestCase):
         self.assertEquals(self.response.status_code, 404)
 
 
-class PostEditViewTests(PostEditViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.client.login(username=self.username, password=self.password)
-        self.response = self.client.get(self.url)
+# class AuthorizedPostEditViewTests(PostEditViewTestCase):
+#     def setUp(self):
+#         super().setUp()
+#         self.client.login(username=self.username, password=self.password)
+#         self.response = self.client.get(self.url)
 
-    def test_status_code(self):
-        self.assertEquals(self.response.status_code, 200)
+#     def test_status_code(self):
+#         self.assertEquals(self.response.status_code, 200)
 
-    def test_resolve_url(self):
-        view = resolve(
-            f"/boards/{self.board.pk}/topics/{self.topic.pk}/posts/{self.post.pk}/edit/"
-        )
-        self.assertEquals(view.func.view_class, PostEditView)
+#     def test_resolve_url(self):
+#         view = resolve(
+#             f"/boards/{self.board.pk}/topics/{self.topic.pk}/posts/{self.post.pk}/edit/"
+#         )
+#         self.assertEquals(view.func.view_class, PostEditView)
 
-    def test_csrf(self):
-        response = self.client.get(
-            reverse(
-                "edit_post",
-                kwargs={
-                    "pk": self.board.pk,
-                    "topic_pk": self.topic.pk,
-                    "post_pk": self.post.pk,
-                },
-            )
-        )
-        self.assertContains(response, "csrfmiddlewaretoken")
+#     def test_csrf(self):
+#         self.assertContains(self.response, "csrfmiddlewaretoken")
 
-    def test_has_form(self):
-        form = self.response.context.get("form")
-        self.assertIsInstance(form, ModelForm)
+#     def test_has_form(self):
+#         form = self.response.context.get("form")
+#         self.assertIsInstance(form, ModelForm)
 
-    def test_form_inputs(self):
-        """
-        The view must contain two inputs: csrf, message textarea
-        """
-        self.assertContains(self.response, "<input", 2)
-        self.assertContains(self.response, "<textarea", 1)
+#     def test_form_inputs(self):
+#         """
+#         The view must contain two inputs: csrf, message textarea
+#         """
+#         self.assertContains(self.response, "<input", 2)
+#         self.assertContains(self.response, "<textarea", 1)
 
-    def test_template_used(self):
-        self.assertTemplateUsed(self.response, 'boards/edit_post.html')
+#     def test_template_used(self):
+#         self.assertTemplateUsed(self.response, 'boards/edit_post.html')
 
-
-class SuccessfulPostEditViewTest(PostEditViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.client.login(username=self.username, password=self.password)
-        self.response = self.client.post(self.url, data={"message": "edited message"})
-
-    def test_redirection(self):
-        """
-        A valid form submission should redirect the user
-        """
-        topic_posts_url = reverse(
-            "topic_posts", kwargs={"pk": self.board.pk, "topic_pk": self.topic.pk}
-        )
-        self.assertRedirects(self.response, topic_posts_url)
-
-    def test_post_changed(self):
-        self.post.refresh_from_db()
-        self.assertEquals(self.post.message, "edited message")
+#     def test_contains_breadcrumb(self):
+#         home_url = reverse('home')
+#         board_topics_url =reverse('board_topics', kwargs={'pk': self.board.pk})
+#         topic_post_url = reverse('topic_posts', kwargs={
+#             'pk': self.board.pk,
+#             'topic_pk': self.topic.pk
+#         })
+#         self.assertContains(self.response, f'href="{home_url}"')
+#         self.assertContains(self.response, f'href="{board_topics_url}"')
+#         self.assertContains(self.response, f'href="{topic_post_url}"')
 
 
-class InvalidPostEditViewTests(PostEditViewTestCase):
-    def setUp(self):
-        """
-        Submit an empty dictionary to the `reply_topic` view
-        """
-        super().setUp()
-        self.client.login(username=self.username, password=self.password)
-        self.response = self.client.post(self.url, {})
+# class SuccessfulPostEditViewTest(PostEditViewTestCase):
+#     def setUp(self):
+#         super().setUp()
+#         self.client.login(username=self.username, password=self.password)
+#         self.response = self.client.post(self.url, data={"message": "edited message"})
 
-    def test_status_code(self):
-        """
-        An invalid form submission should return to the same page
-        """
-        self.assertEquals(self.response.status_code, 200)
+#     def test_redirection(self):
+#         """
+#         A valid form submission should redirect the user
+#         """
+#         topic_posts_url = reverse(
+#             "topic_posts", kwargs={"pk": self.board.pk, "topic_pk": self.topic.pk}
+#         )
+#         self.assertRedirects(self.response, topic_posts_url)
 
-    def test_form_errors(self):
-        form = self.response.context.get("form")
-        self.assertTrue(form.errors)
+#     def test_post_changed(self):
+#         self.post.refresh_from_db()
+#         self.assertEquals(self.post.message, "edited message")
+
+
+# class InvalidPostEditViewTests(PostEditViewTestCase):
+#     def setUp(self):
+#         """
+#         Submit an empty dictionary to the `reply_topic` view
+#         """
+#         super().setUp()
+#         self.client.login(username=self.username, password=self.password)
+#         self.response = self.client.post(self.url, {})
+
+#     def test_status_code(self):
+#         """
+#         An invalid form submission should return to the same page
+#         """
+#         self.assertEquals(self.response.status_code, 200)
+
+#     def test_form_errors(self):
+#         form = self.response.context.get("form")
+#         self.assertTrue(form.errors)

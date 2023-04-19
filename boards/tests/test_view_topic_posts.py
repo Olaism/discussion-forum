@@ -50,3 +50,10 @@ class TopicPostsTests(TopicPostsTestCase):
 
     def test_template_used(self):
         self.assertTemplateUsed(self.response, 'boards/topic_posts.html')
+
+    def test_has_reply_button_link(self):
+        reply_link = reverse('reply_topic', kwargs={
+            'pk': self.board.pk,
+            'topic_pk': self.topic.pk
+        })
+        self.assertContains(self.response, f'href="{reply_link}"')

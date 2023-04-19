@@ -49,8 +49,10 @@ class NewTopicTests(TestCase):
     def test_template_used(self):
         self.assertTemplateUsed('boards/new_topic.html')
 
-    def test_new_topic_view_contains_link_back_to_board_topics_view(self):
+    def test_view_has_breadcrumb_with_correct_links(self):
+        home_url = reverse('home')
         board_topics_url = reverse("board_topics", kwargs={"pk": self.board.pk})
+        self.assertContains(self.response, f'href="{home_url}"')
         self.assertContains(self.response, 'href="{0}"'.format(board_topics_url))
 
     def test_contains_form(self):

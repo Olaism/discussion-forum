@@ -62,6 +62,17 @@ class ReplyTopicTests(ReplyTopicTestCase):
     def test_template_used(self):
         self.assertTemplateUsed(self.response, 'boards/reply_topic.html')
 
+    def test_breadcrumbs(self):
+        home_url = reverse('home')
+        board_topics_url = reverse('board_topics', kwargs={'pk': self.board.pk})
+        topic_post_url = reverse('topic_posts', kwargs={
+            'pk': self.board.pk,
+            'topic_pk': self.topic.pk,
+        })
+        self.assertContains(self.response, f'href="{home_url}"')
+        self.assertContains(self.response, f'href="{board_topics_url}"')
+        self.assertContains(self.response, f'href="{topic_post_url}"')
+
 class SuccessfulReplyTopicTest(ReplyTopicTestCase):
     def setUp(self):
         super().setUp()
