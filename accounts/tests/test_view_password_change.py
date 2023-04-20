@@ -32,7 +32,7 @@ class PasswordChangeTest(TestCase):
         self.assertIsInstance(form, PasswordChangeForm)
 
     def test_form_inputs(self):
-        self.assertContains(self.response, "<input", 4)
+        self.assertContains(self.response, "<input", 5)
         self.assertContains(self.response, 'type="password"')
 
 

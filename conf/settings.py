@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     # Third-party
     "widget_tweaks",
     "taggit",
+    "rest_framework",
 
     "django.contrib.admin",
     "django.contrib.auth",
