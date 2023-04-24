@@ -42,6 +42,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('-publish',)
+        indexes = [
+            models.Index(fields=['-publish']),
+        ]
 
     def __str__(self):
         return self.title
@@ -74,6 +77,9 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ('created',)
+        indexes = [
+            models.Index(fields=['created',])
+        ]
 
     def __str__(self):
         return 'comment by {} on {}'.format(self.name, self.created)

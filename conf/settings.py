@@ -18,8 +18,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # Local
     "accounts",
-    "blog",
-    "boards",
+    "blog.apps.BlogConfig",
+    "boards.apps.BoardsConfig",
     # Third-party
     "widget_tweaks",
     "taggit",
@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "django.contrib.sites",
+    "django.contrib.sitemaps"
 ]
 
 MIDDLEWARE = [
@@ -121,3 +123,6 @@ EMAIL_USE_TLS = True
 
 # TAGGIT SETTINGS
 TAGGIT_CASE_INSENSITIVE = True
+
+# SITE
+SITE_ID = 1
