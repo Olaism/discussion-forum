@@ -1,0 +1,52 @@
+{% extends '_base.html' %}
+
+{% block title %}
+You search "{{ query }}" - blog
+{% endblock title %}
+
+{% block breadcrumb %}{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        {% if query %}
+        <div class="col">
+            <div class="lead">Your result for "{{ query }}"</div>
+
+            <ul class="list-group mt-3">
+                <div class="row justify-content-between">
+                    <div class="col-8">
+                        {% for post in results %}
+                            <li class="list-group-item mt-1">
+                                <div class="row">
+                                    <div class="col">
+                                        <h1 class="text-muted lead">{{ forloop.counter }}.</h1>
+                                    </div>
+                                    <div class="col-sm-9 col-md-10 col-lg-11">
+                                        <h4 class="mb-0"><a href="{{ post.get_absolute_url }}">{{ post.title }} by <small class="text-muted">{{ post.author }}</small></a></h4>
+                                        <small class="mt-0 text-muted">{{ post.highlight }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="alert alert-primary">There are no results for your query</li>
+                            <a href="{% url 'blog:post_search' %}" class="btn btn-primary">Search again</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </ul>
+        </div>
+        {% else %}
+        <div class="col-sm-12 col-md-8 col-lg-5">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Search for post</h5>
+                    <form method="GET">
+                        {% include 'includes/form.html' %}
+                        <button type="submit" class="btn btn-sm btn-primary">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock content %}
