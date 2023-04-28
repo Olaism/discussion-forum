@@ -82,6 +82,22 @@ class PostDetailByUserView(generics.RetrieveAPIView):
         queryset = self.get_queryset()
         return get_object_or_404(queryset, slug=self.kwargs.get('slug'))
 
+class SelfPostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """ returns a detail info of an authenticated user """
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def get_queryset(self):
+        instance = self
+        user = get_user(instance)
+        queryset = Post.objects.filter(author__id=user.pk)
+        return queryset
+
+    def get_object(self, *args, **kwargs):
+        queryset = self.get_queryset()
+        return get_object_or_404(queryset, slug=self.kwargs.get('slug'))
+
 class CommentListByUserPostView(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated,]

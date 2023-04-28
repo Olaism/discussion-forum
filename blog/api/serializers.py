@@ -24,7 +24,7 @@ class PostSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     def validate_publish(self, value):
         """
-        Check that the publish date is not in the past
+        Check that the publish date is not set to the past
         """
         if value < timezone.now():
             raise serializers.ValidationError("Publish date cannot be in the past")
@@ -34,10 +34,6 @@ class PostSerializer(TaggitSerializer, serializers.ModelSerializer):
         model = Post
         fields = ('id', 'title', 'highlight', 'tags', 'author', 'body', 'url', 'publish', 'updated', 'status')
         read_only_fields = ('url', 'updated')
-
-    def get_url(self):
-        request = self.kwargs.get('request')
-        request.build_absolute_uri()
 
 class PostCommentSerializer(serializers.ModelSerializer):
 
