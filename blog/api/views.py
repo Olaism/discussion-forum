@@ -3,38 +3,71 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
+from .mixins import CustomCreateModelMixin
 from ..models import Comment, Post
 from .serializers import (
     PostSerializer,
     CommentSerializer
 )
+from .utils import get_user
 
 User = get_user_model()
 
-class PostListView(generics.ListAPIView):
+class AllPostView(generics.ListAPIView):
+    """ returns all published posts from all authors """
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly,]
+
+    def get_queryset(self):
+        queryset = Post.published.all()
+        return queryset
+
+class SelfPostView(generics.ListCreateAPIView):
+    """ return all posts for an authenticated user """
+    # authentication_classes = [BasicAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated,]
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        instance = self
+        user = get_user(instance)
+        queryset = Post.objects.filter(author=user)
+        return queryset
+
+    def perform_create(self, serializer):
+        user = get_user(self)
+        serializer.save(author=user)
+
+class PostListByUserView(generics.ListAPIView):
+    """ returns all published posts from a user of specific id """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
         user = get_object_or_404(User, pk=self.kwargs.get('blog_id'))
-        queryset = Post.objects.filter(author__id=user.id)
+        queryset = Post.published.filter(author__id=user.id)
         return queryset
 
 class PostQueryView(generics.ListAPIView):
+    """ returns all published posts that match a specific query """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
         search_query = self.kwargs.get('search_query')
-        user = get_object_or_404(User, pk=self.kwargs.get('blog_id'))
-        queryset = Post.objects.filter(author__id=user.pk).filter(
+        # user = get_object_or_404(User, pk=self.kwargs.get('blog_id'))
+        queryset = Post.published.filter(
             Q(title__icontains=search_query) | Q(body__icontains=search_query)
         )
         return queryset
 
-class PostDetailView(generics.RetrieveAPIView):
+class PostDetailByUserView(generics.RetrieveAPIView):
+    """ returns a detail info of a post """
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated,]
@@ -42,26 +75,26 @@ class PostDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         user_id = self.kwargs.get('blog_id')
         user = get_object_or_404(User, pk=user_id)
-        queryset = Post.objects.filter(author__id=user.pk)
+        queryset = Post.published.filter(author__id=user.pk)
         return queryset
 
     def get_object(self, *args, **kwargs):
         queryset = self.get_queryset()
         return get_object_or_404(queryset, slug=self.kwargs.get('slug'))
 
-class CommentListView(generics.ListAPIView):
+class CommentListByUserPostView(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
         user_id = self.kwargs.get('blog_id')
         post_slug = self.kwargs.get('slug')
-        post = get_object_or_404(Post, slug=post_slug, author__id=user_id)
+        post = get_object_or_404(Post, slug=post_slug, author__id=user_id, status='published')
         queryset = Comment.objects.filter(post__id=post.id)
         return queryset
 
 
-class CommentDetailView(generics.RetrieveAPIView):
+class CommentDetailByUserPostView(generics.RetrieveAPIView):
     queryset = Post.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated,]
@@ -70,7 +103,7 @@ class CommentDetailView(generics.RetrieveAPIView):
         user_id = self.kwargs.get('blog_id')
         post_slug = self.kwargs.get('slug')
         user = get_object_or_404(User, pk=user_id)
-        post = get_object_or_404(Post, slug=post_slug, author__id=user.id)
+        post = get_object_or_404(Post, slug=post_slug, author__id=user.id, status='published')
         queryset = Comment.objects.filter(post__id=post.id)
         return queryset
 

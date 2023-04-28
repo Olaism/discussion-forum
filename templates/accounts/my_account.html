@@ -18,6 +18,20 @@
                     <button type="submit" class="btn btn-success">Save Changes</button>
                 </form>
             </div>
+            <div class="card-footer">
+                {% if token.key %}
+                    Token:  <small class="text-muted">{{ token.key }}</small>
+                {% else %}
+                    <div class="row">
+                        <div class="col-6">
+                            You have no token key
+                        </div>
+                        <div class="col-6">
+                            <a href="{% url 'get-token' %}" type="submit" class="btn btn-primary btn-sm">generate one</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

@@ -14,9 +14,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
+    path("api/auth/", include('accounts.api.urls')),
     path('blog/', include("blog.urls", namespace='blog')),
     path('api/v1/blogs/', include("blog.api.urls", namespace='blog-api')),
     path("boards/", include("boards.urls")),
     path("", include("pages.urls", namespace='pages')),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap')
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]

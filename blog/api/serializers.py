@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from rest_framework import serializers
 from taggit.serializers import (
@@ -19,12 +20,24 @@ class AuthorSerializer(serializers.ModelSerializer):
 class PostSerializer(TaggitSerializer, serializers.ModelSerializer):
     url = serializers.CharField(source='get_absolute_url', read_only=True)
     tags = TagListSerializerField()
-    author = AuthorSerializer()
+    author = AuthorSerializer(read_only=True)
+
+    def validate_publish(self, value):
+        """
+        Check that the publish date is not in the past
+        """
+        if value < timezone.now():
+            raise serializers.ValidationError("Publish date cannot be in the past")
+        return value
 
     class Meta:
         model = Post
         fields = ('id', 'title', 'highlight', 'tags', 'author', 'body', 'url', 'publish', 'updated', 'status')
-        read_only_fields = ('author', 'url', 'updated')
+        read_only_fields = ('url', 'updated')
+
+    def get_url(self):
+        request = self.kwargs.get('request')
+        request.build_absolute_uri()
 
 class PostCommentSerializer(serializers.ModelSerializer):
 

@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "taggit",
     "rest_framework",
+    "rest_framework.authtoken",
 
     "django.contrib.admin",
     "django.contrib.auth",
@@ -127,3 +128,14 @@ TAGGIT_CASE_INSENSITIVE = True
 
 # SITE
 SITE_ID = 1
+
+# RESTFRAMEWORK SETTINGS
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated'
+    )
+}
