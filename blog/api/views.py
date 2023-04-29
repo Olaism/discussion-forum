@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .mixins import CustomCreateModelMixin
@@ -19,7 +18,6 @@ User = get_user_model()
 
 class AllPostView(generics.ListAPIView):
     """ returns all published posts from all authors """
-    authentication_classes = [BasicAuthentication, SessionAuthentication]
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly,]
 
@@ -106,7 +104,7 @@ class CommentListByUserPostView(generics.ListAPIView):
         user_id = self.kwargs.get('blog_id')
         post_slug = self.kwargs.get('slug')
         post = get_object_or_404(Post, slug=post_slug, author__id=user_id, status='published')
-        queryset = Comment.objects.filter(post__id=post.id)
+        queryset = Comment.active.filter(post__id=post.id)
         return queryset
 
 
@@ -120,9 +118,9 @@ class CommentDetailByUserPostView(generics.RetrieveAPIView):
         post_slug = self.kwargs.get('slug')
         user = get_object_or_404(User, pk=user_id)
         post = get_object_or_404(Post, slug=post_slug, author__id=user.id, status='published')
-        queryset = Comment.objects.filter(post__id=post.id)
+        queryset = Comment.active.filter(post__id=post.id)
         return queryset
 
     def get_object(self, *args, **kwargs):
         queryset = self.get_queryset()
-        return get_object_or_404(queryset, pk=self.kwargs.get('comment_pk'))
+        return get_object_or_404(queryset, pk=self.kwargs.get('comment_pk'), active=True)
