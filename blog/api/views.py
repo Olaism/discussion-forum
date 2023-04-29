@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .mixins import CustomCreateModelMixin
@@ -44,6 +45,7 @@ class SelfPostView(generics.ListCreateAPIView):
 class PostListByUserView(generics.ListAPIView):
     """ returns all published posts from a user of specific id """
     serializer_class = PostSerializer
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
@@ -68,12 +70,13 @@ class PostDetailByUserView(generics.RetrieveAPIView):
     """ returns a detail info of a post """
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
         user_id = self.kwargs.get('blog_id')
         user = get_object_or_404(User, pk=user_id)
-        queryset = Post.published.filter(author__id=user.pk)
+        queryset = Post.published.filter(author__pk=user.pk)
         return queryset
 
     def get_object(self, *args, **kwargs):
@@ -96,21 +99,29 @@ class SelfPostDetailView(generics.RetrieveUpdateDestroyAPIView):
         queryset = self.get_queryset()
         return get_object_or_404(queryset, slug=self.kwargs.get('slug'))
 
-class CommentListByUserPostView(generics.ListAPIView):
+class CommentListByUserPostView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
         user_id = self.kwargs.get('blog_id')
         post_slug = self.kwargs.get('slug')
         post = get_object_or_404(Post, slug=post_slug, author__id=user_id, status='published')
-        queryset = Comment.active.filter(post__id=post.id)
+        queryset = Comment.objects.filter(post__id=post.id)
         return queryset
 
+    def perform_create(self, serializer):
+        instance = self
+        user = get_user(instance)
+        post = get_object_or_404(Post, slug=self.kwargs.get('slug'))
+        serializer.save(name=user.username, email=user.email, post=post)
 
-class CommentDetailByUserPostView(generics.RetrieveAPIView):
+
+class CommentDetailByUserPostView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = CommentSerializer
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated,]
 
     def get_queryset(self):
@@ -118,7 +129,7 @@ class CommentDetailByUserPostView(generics.RetrieveAPIView):
         post_slug = self.kwargs.get('slug')
         user = get_object_or_404(User, pk=user_id)
         post = get_object_or_404(Post, slug=post_slug, author__id=user.id, status='published')
-        queryset = Comment.active.filter(post__id=post.id)
+        queryset = Comment.objects.filter(post__id=post.id, active=True)
         return queryset
 
     def get_object(self, *args, **kwargs):

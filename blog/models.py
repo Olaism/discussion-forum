@@ -11,11 +11,6 @@ class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status='published')
 
-class IsActiveManager(models.Manager):
-
-    def get_queryset(self):
-        return super().get_queryset().filter(active=True)
-
 
 class Post(models.Model):
     STATUS_CHOICES = (
@@ -88,6 +83,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return 'comment by {} on {}'.format(self.name, self.created)
-
-    objects = models.Manager()
-    active = IsActiveManager()

@@ -43,9 +43,9 @@ class PostCommentSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    post = PostCommentSerializer()
+    post = PostCommentSerializer(read_only=True)
 
     class Meta:
         model = Comment
         fields = ('id', 'post', 'name', 'email', 'body', 'created', 'active')
-        read_only_fields = ('post', 'created', 'active')
+        read_only_fields = ('name', 'email', 'created', 'active')
